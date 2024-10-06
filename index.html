@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore the fascinating world of exoplanets through an interactive simulation.">
+    <meta name="keywords" content="Exoplanet, Space, Simulation, Astronomy">
+    <title>Exoplanet</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-globe"></i> Exoplanet Exploration</h1>
+        <p>Discover distant worlds</p>
+        <div class="nav">
+            <ul>
+                <li><a href="Find_Exoplanet.html">Exoplanet Game</a></li>
+                <li><a href="https://github.com/Arifxyzt/Space_App.git">About Exoplanets</a></li>
+                <li><a href="starts_interface.html">Star_Interface</a></li>
+                <li><a href="Planet_Models.html">Web_Viewer</a></li>
+            </ul>
+        </div>
+    </div>   
+
+    <div class="planet-finder-container">
+        <!-- Sol taraf: Planet Finder formu -->
+        <div class="planet-finder">
+            <h1>Planet Finder</h1>
+            <input type="text" id="planet-input" placeholder="Enter planet name">
+            <button id="find-planet">Find Planet</button>
+            <div id="planet-info"></div>
+            <input type="text" id="planet-input" placeholder="Search for a planet...">
+            <div id="autocomplete-list" class="autocomplete-items"></div>
+        </div>
+
+    
+     <!-- Sağ taraf: Gezegen fotoğrafı -->
+     <div class="planet-image">
+        <iframe id="planet-iframe" src="Planet_Models.html" frameborder="0" width="500" height="300"></iframe>
+    </div>
+</div>
+<div class="exoplanet-gallery">
+    <div class="exoplanet-gallery">
+        <h2>Exoplanet Gallery</h2>
+        <div class="exoplanet-images">
+            <!-- Each image will have a data attribute for the planet name -->
+            <div class="exoplanet-item" data-name="Kepler-22 b">
+                <img src="kepler-22-b-list.webp" alt="Kepler-22 b">
+            </div>
+            <div class="exoplanet-item" data-name="WASP-96 b">
+                <img src="wasp-96-b-list.webp" alt="WASP-96 b">
+            </div>
+            <div class="exoplanet-item" data-name="TOI-849 b">
+                <img src="toi-849-b-list.webp" alt="TOI-849 b">
+            </div>
+            <div class="exoplanet-item" data-name="WASP-12 b">
+                <img src="wasp-12-b-list.webp" alt="WASP-12 b">
+            </div>
+            <div class="exoplanet-item" data-name="TOI-3757 b">
+                <img src="toi-3757-b-list.webp" alt="TOI-3757 b">
+            </div>  
+            <div class="exoplanet-item" data-name="KELT-9 b">
+                <img src="kelt-9-b-list.webp" alt="KELT-9 b">
+            </div>
+
+            <div class="exoplanet-item" data-name="Kepler-7 b">
+                <img src="kepler-7-b-list.webp" alt="Kepler-7 b">
+            </div>
+            <div class="exoplanet-item" data-name="KOI-55 b">
+                <img src="koi-55-b-list.webp" alt="KOI-55 b">
+            </div>
+            <div class="exoplanet-item" data-name="Kepler-186 f">
+                <img src="superearth-list.webp" alt="Kepler-186 f">
+            </div>
+            <div class="exoplanet-item" data-name="TRAPPIST-1 e">
+                <img src="terrestrial-list.webp" alt="TRAPPIST-1 e">
+            </div>
+            <div class="exoplanet-item" data-name="HD 189733 b">
+                <img src="hd-189733-b-list.webp" alt="HD 189733 b">
+            </div>
+            <div class="exoplanet-item" data-name="Kepler-16 b">
+                <img src="kepler-16-b-list.webp" alt="Kepler-16 b">
+            </div>
+            <div class="exoplanet-item" data-name="55 Cancri e">
+                <img src="55-cnc-e-list.webp" alt="55 Cancri e">
+            </div>
+            <div class="exoplanet-item" data-name="TrES-4 b">
+                <img src="gasgiant-list.webp" alt="TrES-4 b">
+            </div>
+            <div class="exoplanet-item" data-name="HD-17156 b">
+                <img src="hd-17156-b-list.webp" alt="HD-17156 b">
+            </div>
+            <div class="exoplanet-item" data-name="GJ-1132-b">
+                <img src="gj-1132-b-list.webp" alt="GJ-1132-b">
+            </div>
+            <div class="exoplanet-item" data-name="GJ 15 A b">
+                <img src="gj-15-a-b-list.webp" alt="GJ 15 A b">
+            </div>
+            <div class="exoplanet-item" data-name="AU Microscopii b">
+                <img src="AU Microscopii b.webp" alt="AU Microscopii b">
+            </div>
+            <!-- Add more exoplanets as needed -->
+        </div>
+    </div>
+    <div class="footer">
+        <p>© Kepler-xyz Exoplanet Simulation || All Rights Reserved by CalPhysic</p>
+        <div class="contact-icons">
+            <a href="https://www.linkedin.com/in/arif-barlas-çölgeçen-66546022b" target="_blank" class="icon-link">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="mailto:colgecenarif2435@gmail.com" class="icon-link">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="tel:+905528752435" class="icon-link">
+                <i class="fas fa-phone-alt"></i>
+            </a>
+        </div>
+    </div>
+    <script type="module" src="index.js"></script>
+</body>
+</html>

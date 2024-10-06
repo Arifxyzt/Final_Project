@@ -1,0 +1,185 @@
+body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background-image: url('foto_space_3.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+}
+
+html, body {
+    height: 100%;
+}
+
+.header {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #f0db4f;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+}
+
+.header p {
+    font-size: 1.2rem;
+    font-style: italic;
+}
+
+.nav {
+    margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    text-align: center;
+}
+
+.nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.nav li {
+    margin: 0 15px;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav a:hover {
+    color: #f0db4f;
+}
+
+.planet-finder-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 50px;
+}
+
+.planet-finder {
+    width: 500px;
+    background: black;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height:300px;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#planet-info {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.planet-image img {
+    width: 500px;
+    max-height: 300px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.planet-image img:hover {
+    transform: scale(1.05);
+}
+
+.footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+}
+
+.icon-link {
+    margin: 0 10px;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.icon-link:hover {
+    color: #f0db4f;
+}
+.exoplanet-gallery {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.exoplanet-images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px; /* Space between images */
+}
+
+.exoplanet-item {
+    position: relative;
+    width: 150px; /* Adjust width as needed */
+    height: 150px; /* Adjust height as needed */
+    overflow: hidden;
+    border-radius: 10px; /* Optional: rounded corners */
+}
+
+.exoplanet-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the area without stretching */
+    transition: transform 0.3s; /* Smooth scaling effect */
+}
+
+.exoplanet-item:hover img {
+    transform: scale(1.1); /* Slightly enlarge image on hover */
+}
+
+.exoplanet-item::after {
+    content: attr(data-name); /* Display the name from data attribute */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    color: #fff;
+    padding: 5px;
+    opacity: 0;
+    transition: opacity 0.3s; /* Smooth transition for opacity */
+}
+
+.exoplanet-item:hover::after {
+    opacity: 1; /* Show name on hover */
+}
+.planet-image iframe {
+    width: 500px;
+    max-height: 300px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.planet-image iframe:hover {
+    transform: scale(1.05);
+}

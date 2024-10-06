@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unity WebGL Content</title>
+    <style>
+        /* İframe boyutları ve stil ayarları */
+        body {
+            display: flex;
+            justify-content: center; /* Ortalamak için */
+            align-items: center; /* Ortalamak için */
+            height: 100vh; /* Tam yükseklik */
+            margin: 0; /* Varsayılan kenar boşluğunu kaldır */
+            background-color: rgba(0, 0, 0, 0.1); /* Arka plan rengi */
+        }
+
+        #unity-container {
+            width: 400px; /* İframe genişliğini ayarla */
+            height: 300px; /* İframe yüksekliğini ayarla */
+            display: flex;
+            justify-content: center; /* Ortalamak için */
+            align-items: center; /* Ortalamak için */
+            border: 1px solid #ccc; /* Kenar çizgisi ekle */
+            border-radius: 5px; /* Kenarları yuvarlaştır */
+            background-color: rgba(255, 255, 255, 0.1); /* Arka plan rengi */
+        }
+
+        #unity-canvas {
+            width: 100%; /* İframe boyutunu %100 yap */
+            height: 100%; /* İframe boyutunu %100 yap */
+        }
+    </style>
+</head>
+<body>
+    <div id="unity-container" class="unity-desktop">
+        <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+        <div id="unity-loading-bar">
+            <div id="unity-logo"></div>
+            <div id="unity-progress-bar-empty">
+                <div id="unity-progress-bar-full"></div>
+            </div>
+        </div>
+        <div id="unity-warning"></div>
+        <div id="unity-footer">
+            <div id="unity-webgl-logo"></div>
+            <div id="unity-fullscreen-button"></div>
+            <div id="unity-build-title">My project</div>
+        </div>
+    </div>
+
+    <script>
+        var container = document.querySelector("#unity-container");
+        var canvas = document.querySelector("#unity-canvas");
+        var loadingBar = document.querySelector("#unity-loading-bar");
+        var progressBarFull = document.querySelector("#unity-progress-bar-full");
+        var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+        var warningBanner = document.querySelector("#unity-warning");
+
+        function unityShowBanner(msg, type) {
+            function updateBannerVisibility() {
+                warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+            }
+            var div = document.createElement('div');
+            div.innerHTML = msg;
+            warningBanner.appendChild(div);
+            if (type == 'error') div.style = 'background: red; padding: 10px;';
+            else {
+                if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+                setTimeout(function() {
+                    warningBanner.removeChild(div);
+                    updateBannerVisibility();
+                }, 5000);
+            }
+            updateBannerVisibility();
+        }
+
+        var buildUrl = "Build"; // Build klasörünün yolu
+        var loaderUrl = buildUrl + "/Space_App.loader.js";
+        var config = {
+            dataUrl: buildUrl + "/Space_App.data.br",
+            frameworkUrl: buildUrl + "/Space_App.framework.js.br",
+            codeUrl: buildUrl + "/Space_App.wasm.br",
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "DefaultCompany",
+            productName: "My project",
+            productVersion: "0.1.0",
+            showBanner: unityShowBanner,
+        };
+
+        loadingBar.style.display = "block";
+
+        var script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+            createUnityInstance(canvas, config, (progress) => {
+                progressBarFull.style.width = 100 * progress + "%";
+            }).then((unityInstance) => {
+                loadingBar.style.display = "none";
+                fullscreenButton.onclick = () => {
+                    unityInstance.SetFullscreen(1);
+                };
+            }).catch((message) => {
+                alert(message);
+            });
+        };
+
+        document.body.appendChild(script);
+    </script>
+</body>
+</html>

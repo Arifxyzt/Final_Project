@@ -1,0 +1,519 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>🚀 ExoSky Explorer Kids!</title>
+            <style>
+                @font-face {
+                    font-family: 'Comic Neue';
+                    font-style: normal;
+                    font-weight: 700;
+                    src: url(data:font/woff2;base64, /* Base64 encoded font data */) format('woff2');
+                }
+
+                body {
+                    margin: 0;
+                    background: linear-gradient(45deg, #000033, #000066);
+                    color: #fff;
+                    font-family: 'Comic Neue', cursive;
+                    overflow: hidden;
+                }
+
+                .twinkling {
+                    position: fixed;
+                    width: 100%;
+                    height: 100%;
+                    animation: twinkle 4s infinite;
+                    background: transparent;
+                    pointer-events: none; /* Fix: Prevent twinkling layer from capturing events */
+                }
+
+                @keyframes twinkle {
+                    0% { opacity: 0.3; }
+                    50% { opacity: 0.7; }
+                    100% { opacity: 0.3; }
+                }
+
+                #star-map {
+                    width: 100vw;
+                    height: 100vh;
+                    position: relative;
+                }
+
+                /* Ensure SVG doesn't create additional layers */
+                #star-map svg {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    pointer-events: none; /* Fix: Set default to none */
+                }
+
+                /* Only enable pointer events for interactive elements */
+                #star-map svg .star {
+                    pointer-events: auto;
+                    cursor: pointer;
+                }
+
+                .space-console {
+                    position: absolute;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(0, 0, 100, 0.8);
+                    padding: 20px;
+                    border-radius: 20px;
+                    border: 4px solid #4488ff;
+                    box-shadow: 0 0 20px #4488ff;
+                    text-align: center;
+                    width: 80%;
+                    max-width: 600px;
+                    z-index: 100; /* Fix: Ensure controls stay on top */
+                }
+
+                .space-button {
+                    background: linear-gradient(45deg, #ff4488, #ff44aa);
+                    color: white;
+                    border: none;
+                    padding: 15px 30px;
+                    margin: 10px;
+                    border-radius: 30px;
+                    font-size: 18px;
+                    font-family: 'Comic Neue', cursive;
+                    cursor: pointer;
+                    transition: transform 0.2s, box-shadow 0.2s;
+                    box-shadow: 0 0 10px #ff4488;
+                }
+
+                .space-button:hover {
+                    transform: scale(1.1);
+                    box-shadow: 0 0 20px #ff4488;
+                }
+
+                .space-button.active {
+                    background: linear-gradient(45deg, #44ff88, #44ffaa);
+                    box-shadow: 0 0 20px #44ff88;
+                }
+
+                .space-input {
+                    background: rgba(255, 255, 255, 0.9);
+                    border: none;
+                    padding: 15px;
+                    border-radius: 30px;
+                    font-size: 18px;
+                    font-family: 'Comic Neue', cursive;
+                    width: 200px;
+                    margin: 10px;
+                    text-align: center;
+                }
+
+                .space-tooltip {
+                    position: absolute;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(0, 0, 0, 0.8);
+                    padding: 15px;
+                    border-radius: 15px;
+                    font-size: 20px;
+                    display: none;
+                    pointer-events: none; /* Fix: Prevent tooltip from capturing events */
+                    z-index: 200; /* Fix: Keep tooltip above other elements */
+                }
+
+                .star {
+                    cursor: pointer;
+                    transition: transform 0.2s;
+                }
+
+                .star:hover {
+                    transform: scale(1.5);
+                }
+
+                .star.selected {
+                    stroke: #ffff00;
+                    stroke-width: 3px;
+                    animation: pulse 1s infinite;
+                }
+
+                .constellation-line {
+                    pointer-events: none; /* Fix: Prevent lines from capturing events */
+                    stroke: rgba(255, 255, 100, 0.5);
+                    stroke-width: 2px;
+                    stroke-dasharray: 5,5;
+                    animation: dash 20s linear infinite;
+                }
+
+                .space-message {
+                    position: absolute;
+                    font-size: 24px;
+                    color: #ffff00;
+                    text-shadow: 0 0 10px #ffff00;
+                    pointer-events: none; /* Fix: Prevent messages from capturing events */
+                    animation: fadeOut 2s forwards;
+                    z-index: 300; /* Fix: Keep messages above other elements */
+                }
+
+                .tutorial {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                }
+
+                .tutorial-content {
+                    background: rgba(0, 100, 255, 0.9);
+                    padding: 30px;
+                    border-radius: 20px;
+                    max-width: 600px;
+                    text-align: center;
+                    border: 4px solid #ffff00;
+                }
+
+                .tutorial h2 {
+                    color: #ffff00;
+                    font-size: 28px;
+                    margin-bottom: 20px;
+                }
+
+                .tutorial p {
+                    font-size: 20px;
+                    margin: 10px 0;
+                }
+
+                .tutorial-button {
+                    background: #ffff00;
+                    color: #000066;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 20px;
+                    font-size: 18px;
+                    cursor: pointer;
+                    margin-top: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="twinkling"></div>
+            <div id="star-map"></div>
+            
+            <!-- Tutorial Overlay -->
+            <div class="tutorial" id="tutorial">
+                <div class="tutorial-content">
+                    <h2>🚀 Welcome to ExoSky Explorer! 🌟</h2>
+                    <p>Hey Space Explorer! Ready to discover the stars from Proxima Centauri b?</p>
+                    <p>👉 Click on stars to connect them!</p>
+                    <p>🎨 Make your own constellations!</p>
+                    <p>✨ Give your constellation a cool name!</p>
+                    <button class="tutorial-button" onclick="closeTutorial()">Let's Explore! 🚀</button>
+                </div>
+            </div>
+            
+            <!-- Main Control Panel -->
+            <div class="space-console">
+                <button id="draw-mode" class="space-button">✨ Draw Stars</button>
+                <button id="erase-mode" class="space-button">🌟 Erase Lines</button>
+                <input type="text" id="constellation-name" class="space-input" placeholder="Name your constellation!">
+                <button id="save-constellation" class="space-button">🚀 Save Creation!</button>
+            </div>
+            
+            <div class="space-tooltip" id="tooltip"></div>
+            
+            <script>
+
+                // Save butonuna tıklandığında resmi kaydet
+            // Save butonuna tıklandığında resmi kaydet
+            
+                // Provided Star Data
+                const magData = [-26.176799080357924, -25.4139455369914, -21.527137455813318, -20.615157163813308, -20.4216578559153, -20.61384308641331, -21.505546627960236, -20.951320848475035, -19.424484520516657, -18.940450398613024, -19.316965050226912, -20.028263582468504, -21.455403016937254, -20.307124874966554, -19.876835583290557, -18.32374885878452, -21.609585909901654, -18.702332066421725, -19.21081756525519, -20.505875067257776, -19.359853537883914, -18.79275714569384, -22.62331874415198, -17.854024722934767, -19.170929602241394, -24.696025011985512, -20.933880816120855, -17.728779164436418, -19.473539370311997, -18.436288430863655, -18.31023205797574, -17.544061015157027, -18.30414909216229, -18.771035267746754, -17.79550642459943, -17.35264465224425, -19.540384287587976, -19.183601534709034, -18.87265100432934, -18.179249086276783, -18.105940940666493, -19.37403235478206, -19.133454442505, -18.212839988536906, -17.54066216943879, -17.988941037256595, -19.33368854531919, -17.1365767408943, -17.954515884142253, -17.633662783705];
+                const raData = [17.429009864712263, 17.429010262374053, 17.429011652084622, 17.429010703520458, 17.429013154301487, 17.429009402402173, 17.429005388493984, 17.429005612217818, 17.429003573810874, 17.429006742889563, 17.429015045598156, 17.429017481158148, 17.42900544439367, 17.42901688111235, 17.429018710131228, 17.42901695149736, 17.428999201290395, 17.429018221661106, 17.429021787084867, 17.42901929771841, 17.42901728764203, 17.42902561860569, 17.429018284001696, 17.4289943887374, 17.42899355410872, 17.429006539156912, 17.429010324508347, 17.428994277293047, 17.429024402616776, 17.429027658604586, 17.42899606950047, 17.429028235438775, 17.428998772459625, 17.429020840766853, 17.428997460462863, 17.429030448622026, 17.429017566384324, 17.429030282218704, 17.42903151534924, 17.429032511852046, 17.428994645670855, 17.428995877239046, 17.428993519216938, 17.429024496373433, 17.42902814415298, 17.429034716826166, 17.429015857587704, 17.42899876869337, 17.428984950660126, 17.429036336132068];
+                const decData = [-21.29193158164383, -21.29193389909345, -21.291930106852117, -21.29192871753874, -21.291933885712453, -21.291927308133825, -21.291929759720098, -21.291928435328597, -21.29193292806691, -21.291937456385657, -21.29193605282029, -21.291932620771032, -21.291925135459316, -21.29192704504766, -21.29193067601406, -21.29193911352021, -21.29193858907805, -21.291922045663863, -21.291924628735035, -21.29194193910913, -21.291918718665123, -21.291929734853067, -21.29194447035992, -21.291925827545924, -21.291927576716233, -21.29194740712582, -21.291915449398033, -21.291924286032643, -21.291941015471547, -21.291930836403584, -21.291943133307456, -21.291927035397315, -21.29191642465518, -21.2919158208675, -21.29191654401005, -21.29192738403334, -21.291950574610105, -21.291939325104092, -21.291925949347867, -21.29192898831445, -21.291915553722166, -21.291949295643704, -21.29194763648257, -21.291950447427126, -21.291947712802806, -21.291926603145882, -21.29195554640812, -21.291954798534544, -21.291920724840438, -21.291922986898083];
+
+                class KidFriendlyExoSky {
+                    constructor() {
+                        this.width = window.innerWidth;
+                        this.height = window.innerHeight;
+                        this.stars = this.createStars(); // Use provided star data
+                        this.selectedStars = [];
+                        this.constellationLines = [];
+                        this.drawMode = false;
+                        this.eraseMode = false;
+                        
+                        this.svg = this.createSVG('star-map', this.width, this.height);
+                        
+                        this.setupControls();
+                        this.renderStars();
+                        this.createStarryBackground();
+                        this.loadConstellations();
+                    }
+                    
+                    createSVG(containerId, width, height) {
+                        const container = document.getElementById(containerId);
+                        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                        svg.setAttribute("width", width);
+                        svg.setAttribute("height", height);
+                        container.appendChild(svg);
+                        return svg;
+                    }
+                    
+                    createStarryBackground() {
+                        // Create twinkling background stars
+                        const numBackgroundStars = 100;
+                        for (let i = 0; i < numBackgroundStars; i++) {
+                            const star = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                            star.setAttribute('class', 'background-star');
+                            star.setAttribute('cx', Math.random() * this.width);
+                            star.setAttribute('cy', Math.random() * this.height);
+                            star.setAttribute('r', Math.random() * 2);
+                            star.setAttribute('fill', 'white');
+                            star.style.opacity = Math.random();
+                            this.svg.appendChild(star);
+                        }
+                    }
+                    
+                    showMessage(text, x, y) {
+                        const message = document.createElement('div');
+                        message.className = 'space-message';
+                        message.style.left = `${x}px`;
+                        message.style.top = `${y}px`;
+                        message.textContent = text;
+                        document.body.appendChild(message);
+                        
+                        setTimeout(() => message.remove(), 2000);
+                    }
+                    
+                    createStars() {
+                        const stars = [];
+                        for (let i = 0; i < raData.length; i++) {
+                            stars.push({
+                                id: i,
+                                ra: raData[i],
+                                dec: decData[i],
+                                magnitude: magData[i]
+                            });
+                        }
+                        return stars;
+                    }
+                    
+                    renderStars() {
+                        // Determine RA and Dec ranges for scaling
+                        const raValues = this.stars.map(star => star.ra);
+                        const decValues = this.stars.map(star => star.dec);
+                        const minRA = Math.min(...raValues);
+                        const maxRA = Math.max(...raValues);
+                        const minDec = Math.min(...decValues);
+                        const maxDec = Math.max(...decValues);
+                        
+                        // Create scales to map RA and Dec to screen coordinates
+                        const padding = 50; // Padding from edges
+                        const xScale = this.createScale(minRA, maxRA, padding, this.width - padding);
+                        const yScale = this.createScale(minDec, maxDec, padding, this.height - padding);
+                        
+                        this.stars.forEach(star => {
+                            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                            circle.setAttribute('class', 'star');
+                            circle.setAttribute('cx', xScale(star.ra));
+                            circle.setAttribute('cy', yScale(star.dec));
+                            
+                            // Determine star size based on magnitude (assuming brighter stars have lower magnitude values)
+                            const size = this.calculateStarSize(star.magnitude);
+                            circle.setAttribute('r', size);
+                            
+                            // Determine star color based on magnitude (brighter stars are whiter)
+                            const color = this.calculateStarColor(star.magnitude);
+                            circle.setAttribute('fill', color);
+                            
+                            circle.addEventListener('click', (event) => this.handleStarClick(event, star));
+                            circle.addEventListener('mouseover', (event) => this.showTooltip(event, '✨ Click me!'));
+                            circle.addEventListener('mouseout', () => this.hideTooltip());
+                            this.svg.appendChild(circle);
+                        });
+                    }
+                    
+                    createScale(domainStart, domainEnd, rangeStart, rangeEnd) {
+                        const domainSpan = domainEnd - domainStart;
+                        const rangeSpan = rangeEnd - rangeStart;
+                        return function(value) {
+                            return ((value - domainStart) / domainSpan) * rangeSpan + rangeStart;
+                        };
+                    }
+                    
+                    calculateStarSize(magnitude) {
+                        // Example: Invert magnitude for size (adjust scaling as needed)
+                        // Assuming magnitudes are negative and higher absolute value means brighter
+                        const baseSize = 3;
+                        const size = baseSize + (Math.abs(magnitude) / 10);
+                        return size;
+                    }
+                    
+                    calculateStarColor(magnitude) {
+                        // Example: Brighter stars are whiter, dimmer stars have a slight yellow tint
+                        const brightness = Math.min(1, (Math.abs(magnitude) / 30));
+                        const colorIntensity = Math.floor(255 * brightness);
+                        return `rgb(${colorIntensity}, ${colorIntensity}, ${colorIntensity})`;
+                    }
+                    
+                    showTooltip(event, text) {
+                        const tooltip = document.getElementById('tooltip');
+                        tooltip.style.display = 'block';
+                        tooltip.textContent = text;
+                        const tooltipWidth = tooltip.offsetWidth;
+                        tooltip.style.left = `${event.pageX - tooltipWidth / 2}px`;
+                        tooltip.style.top = `${event.pageY - 40}px`;
+                    }
+                    
+                    hideTooltip() {
+                        const tooltip = document.getElementById('tooltip');
+                        tooltip.style.display = 'none';
+                    }
+                    
+                    handleStarClick(event, star) {
+                        if (this.drawMode) {
+                            if (this.selectedStars.length < 2) {
+                                this.selectedStars.push(star);
+                                event.target.classList.add('selected');
+                                
+                                if (this.selectedStars.length === 2) {
+                                    this.drawConstellationLine();
+                                    this.showMessage('✨ Great connection!', event.pageX, event.pageY);
+                                    this.selectedStars = [];
+                                    const starsElements = document.querySelectorAll('.star');
+                                    starsElements.forEach(s => s.classList.remove('selected'));
+                                }
+                            }
+                        } else if (this.eraseMode) {
+                            // Erase functionality: Remove the constellation lines connected to this star
+                            this.eraseConstellationLines(star);
+                            this.showMessage('🗑️ Lines erased!', event.pageX, event.pageY);
+                        }
+                    }
+                    
+                    drawConstellationLine() {
+                        const [star1, star2] = this.selectedStars;
+                        const line = {
+                            x1: star1.ra,
+                            y1: star1.dec,
+                            x2: star2.ra,
+                            y2: star2.dec
+                        };
+                        
+                        this.constellationLines.push(line);
+                        this.renderConstellationLines();
+                    }
+                    
+                    renderConstellationLines() {
+                        // Remove existing lines
+                        const existingLines = this.svg.querySelectorAll('.constellation-line');
+                        existingLines.forEach(line => line.remove());
+
+                        // Render all constellation lines
+                        this.constellationLines.forEach(line => {
+                            const svgLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                            svgLine.setAttribute('class', 'constellation-line');
+                            // Get the scaled values for the coordinates, ensuring y-coordinates aren't inverted
+                            svgLine.setAttribute('x1', this.getScaledValue(line.x1, 'ra'));
+                            svgLine.setAttribute('y1', this.height - this.getScaledValue(line.y1, 'dec')); // Invert only for y-coordinates
+                            svgLine.setAttribute('x2', this.getScaledValue(line.x2, 'ra'));
+                            svgLine.setAttribute('y2', this.height - this.getScaledValue(line.y2, 'dec')); // Invert only for y-coordinates
+                            this.svg.appendChild(svgLine);
+                        });
+                    }
+
+                    getScaledValue(value, type) {
+                        // Recreate the scale functions used in renderStars
+                        if (!this.xScale || !this.yScale) {
+                            const raValues = this.stars.map(star => star.ra);
+                            const decValues = this.stars.map(star => star.dec);
+                            const minRA = Math.min(...raValues);
+                            const maxRA = Math.max(...raValues);
+                            const minDec = Math.min(...decValues);
+                            const maxDec = Math.max(...decValues);
+                            this.xScale = this.createScale(minRA, maxRA, 50, this.width - 50);
+                            this.yScale = this.createScale(minDec, maxDec, this.height - 50, 50); // Maintain Y-axis inversion here
+                        }
+                        
+                        // Scale based on type without removing the y-axis inversion in the rendering logic
+                        if (type === 'ra') {
+                            return this.xScale(value);
+                        } else if (type === 'dec') {
+                            return this.yScale(value);
+                        }
+                        return value;
+                    }
+                    
+                    setupControls() {
+                        const drawButton = document.getElementById('draw-mode');
+                        const eraseButton = document.getElementById('erase-mode');
+                        const saveButton = document.getElementById('save-constellation');
+                        const nameInput = document.getElementById('constellation-name');
+                        
+                        drawButton.addEventListener('click', () => {
+                            this.drawMode = !this.drawMode;
+                            this.eraseMode = false;
+                            drawButton.classList.toggle('active', this.drawMode);
+                            eraseButton.classList.remove('active');
+                            this.showMessage(this.drawMode ? '🎨 Draw mode on!' : '✨ Draw mode off!', 
+                                this.width / 2, this.height / 2);
+                        });
+                        
+                        eraseButton.addEventListener('click', () => {
+                            this.eraseMode = !this.eraseMode;
+                            this.drawMode = false;
+                            eraseButton.classList.toggle('active', this.eraseMode);
+                            drawButton.classList.remove('active');
+                            this.showMessage(this.eraseMode ? '🧹 Erase mode on!' : '✨ Erase mode off!', 
+                                this.width / 2, this.height / 2);
+                        });
+                        
+                        saveButton.addEventListener('click', () => {
+                            const name = nameInput.value.trim();
+                            if (name) {
+                                this.saveConstellation(name);
+                                this.showMessage('🚀 Constellation saved!', this.width / 2, this.height / 2);
+                            } else {
+                                this.showMessage('🌟 Please name your constellation!', this.width / 2, this.height / 2);
+                            }
+                        });
+                    }
+
+                    saveConstellation(name) {
+                        if (!name || this.constellationLines.length === 0) return;
+                        
+                        const constellations = JSON.parse(localStorage.getItem('constellations') || '[]');
+                        constellations.push({
+                            name: name,
+                            connections: this.constellationLines
+                        });
+                        localStorage.setItem('constellations', JSON.stringify(constellations));
+                        
+                        this.constellationLines = [];
+                        this.renderConstellationLines();
+                        document.getElementById('constellation-name').value = '';
+                    }
+                    
+                    loadConstellations() {
+                        const constellations = JSON.parse(localStorage.getItem('constellations') || '[]');
+                        constellations.forEach(constellation => {
+                            constellation.connections.forEach(line => {
+                                this.constellationLines.push(line);
+                            });
+                        });
+                        this.renderConstellationLines();
+                    }
+                }
+                
+                function closeTutorial() {
+                    document.getElementById('tutorial').style.display = 'none';
+                }
+                
+                // Initialize the viewer when the page loads
+                window.addEventListener('load', () => {
+                    new KidFriendlyExoSky();
+                });
+            </script>
+        </body>
+        </html>
